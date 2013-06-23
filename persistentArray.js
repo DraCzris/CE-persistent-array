@@ -35,10 +35,41 @@
 	}
 
 	/**
+ 	 * BASIC ARRAY MANIPULATION
+ 	 */
+ 	attr.get = function(index) {
+ 		return this.data[index];
+ 	}
+
+ 	attr.getAll = function() {
+ 		return this.data;
+ 	}
+
+	attr.size = function() {
+		return this.data.size();
+	}
+
+ 	attr.add = function(item) {
+ 		this.data.push(item);
+ 		this._persist();
+ 	}
+
+
+	attr.remove = function(index) {
+		this.data.splice(index, 1);
+		this._persist();
+	}
+
+
+	/**
+	 * CORE
+	 */
+
+	/**
 	 * Set data of array
 	 * @param  {Array} array Array of items
 	 */
-	attr.setData = function(array) {
+	attr._setData = function(array) {
 		this.data = array;
 	}
 
@@ -46,7 +77,7 @@
 	 * Getter on data
 	 * @return {Array} Array of items
 	 */
-	attr.getData = function() {
+	attr._getData = function() {
 		return this.data;
 	}
 
@@ -59,7 +90,7 @@
 		var that = this;
 
 		chrome.storage.sync.get(this.namespace, function(persistObject) {
-			that.setData(persistObject[that.namespace]);
+			that._setData(persistObject[that.namespace]);
 			that.loaded();
 		});
 	}
