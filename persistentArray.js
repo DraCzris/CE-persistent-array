@@ -30,7 +30,7 @@
 	    	this.loaded = typeof callbacks.loaded !== 'undefined' ? callbacks.loaded : attr.loaded;
 	    	this.saved = typeof callbacks.saved !== 'undefined' ? callbacks.saved : attr.saved;
 	    }
-
+	    this.data = [];
 	    this._load();
 	}
 
@@ -46,7 +46,7 @@
  	}
 
 	attr.size = function() {
-		return this.data.size();
+		return this.data.length;
 	}
 
  	attr.add = function(item) {
@@ -90,7 +90,12 @@
 		var that = this;
 
 		chrome.storage.sync.get(this.namespace, function(persistObject) {
-			that._setData(persistObject[that.namespace]);
+			if (typeof persistObject[that.namespace] === 'undefined') {
+				that._setData(new Array());
+			} else {
+				that._setData(persistObject[that.namespace]);
+			}
+
 			that.loaded();
 		});
 	}
@@ -109,6 +114,10 @@
 		chrome.storage.sync.set(payload, function() {
 			that.saved();
 		});
+	}
+
+	attr._clear = function() {
+		chrome.storage.sync.clear(function(){alert("Cleared");});
 	}
 
 	window.PersistentArray = Def;
